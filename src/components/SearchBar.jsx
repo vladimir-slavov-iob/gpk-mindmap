@@ -22,7 +22,7 @@ function SearchBar({ onResults, onArticleSelect }) {
   useEffect(() => {
     if (query.trim() === '') {
       setResults([])
-      onResults([])
+      // Don't call onResults([]) here - keep the existing graph visible
       return
     }
 
@@ -47,21 +47,22 @@ function SearchBar({ onResults, onArticleSelect }) {
     })
 
     setResults(foundArticles.slice(0, 20)) // Limit to 20 results
-    onResults(foundArticles)
+    // Don't call onResults here - only update graph when user clicks a result
     setShowResults(true)
-  }, [query, onResults])
+  }, [query])
 
   const handleInputChange = (e) => {
     setQuery(e.target.value)
   }
 
   const handleResultClick = (article) => {
+    // Update the graph to show this article and its connections
+    onResults([article])
     // Select the article to show in the panel and focus on it
     if (onArticleSelect) {
       onArticleSelect(article, true) // true = should focus on the node
     }
-    // Don't call onResults here - the node is already visible from the search
-    // Just close the dropdown
+    // Close the dropdown
     setShowResults(false)
   }
 
@@ -110,7 +111,7 @@ function SearchBar({ onResults, onArticleSelect }) {
             className="clear-btn"
             onClick={() => {
               setQuery('')
-              onResults([])
+              // Don't call onResults([]) - keep the existing graph visible
               setShowResults(false)
             }}
           >

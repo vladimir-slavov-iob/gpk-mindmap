@@ -20,13 +20,20 @@ const nodeTypes = {
 }
 
 // Dagre layout (no caching to avoid stale position issues)
-const getLayoutedElements = (nodes, edges, direction = 'LR') => {
+const getLayoutedElements = (nodes, edges) => {
   if (nodes.length === 0) return { nodes: [], edges }
 
   // Calculate layout
   const dagreGraph = new dagre.graphlib.Graph()
   dagreGraph.setDefaultEdgeLabel(() => ({}))
-  dagreGraph.setGraph({ rankdir: direction, nodesep: 80, ranksep: 120 })
+  // Use LR for wider graphs, increase both separations for better spread
+  dagreGraph.setGraph({
+    rankdir: 'LR',
+    nodesep: 60,  // vertical spacing between nodes in same rank
+    ranksep: 200, // horizontal spacing between ranks
+    marginx: 50,
+    marginy: 50
+  })
 
   nodes.forEach((node) => {
     dagreGraph.setNode(node.id, { width: 200, height: 100 })
@@ -40,6 +47,13 @@ const getLayoutedElements = (nodes, edges, direction = 'LR') => {
 
   const layoutedNodes = nodes.map((node) => {
     const nodeWithPosition = dagreGraph.node(node.id)
+    // Safety check - if dagre didn't position this node, give it a default position
+    if (!nodeWithPosition) {
+      return {
+        ...node,
+        position: { x: 0, y: 0 },
+      }
+    }
     return {
       ...node,
       position: {
@@ -73,24 +87,59 @@ function MindMapInner({
   // Create nodes and layout from GPK data (only when search changes)
   useEffect(() => {
     // Determine which articles to show based on highlighted (searched) articles
+    // We expand multiple levels to create a proper mind map
     let articlesToShow = new Set()
 
     if (highlightedArticles.length > 0) {
-      // Show highlighted articles and their connections
-      highlightedArticles.forEach(articleNum => {
-        articlesToShow.add(articleNum)
+      // Start with the searched articles
+      const level0 = new Set(highlightedArticles)
+      level0.forEach(a => articlesToShow.add(a))
 
-        // Add direct references from this article
-        const directRefs = gpkData.direct_references[articleNum] || []
-        directRefs.forEach(ref => articlesToShow.add(ref))
+      // Level 1: Direct connections (references to and from)
+      const level1 = new Set()
+      level0.forEach(articleNum => {
+        // Articles this one references
+        const refs = gpkData.direct_references[articleNum] || []
+        refs.forEach(ref => level1.add(ref))
 
-        // Add articles that reference this article
+        // Articles that reference this one
         Object.entries(gpkData.direct_references).forEach(([source, targets]) => {
           if (targets.includes(articleNum)) {
-            articlesToShow.add(source)
+            level1.add(source)
           }
         })
       })
+      level1.forEach(a => articlesToShow.add(a))
+
+      // Level 2: Connections of connections (2nd degree)
+      const level2 = new Set()
+      level1.forEach(articleNum => {
+        // Articles this one references
+        const refs = gpkData.direct_references[articleNum] || []
+        refs.forEach(ref => level2.add(ref))
+
+        // Articles that reference this one
+        Object.entries(gpkData.direct_references).forEach(([source, targets]) => {
+          if (targets.includes(articleNum)) {
+            level2.add(source)
+          }
+        })
+      })
+      level2.forEach(a => articlesToShow.add(a))
+
+      // Level 3: One more level for a richer graph
+      const level3 = new Set()
+      level2.forEach(articleNum => {
+        const refs = gpkData.direct_references[articleNum] || []
+        refs.forEach(ref => level3.add(ref))
+
+        Object.entries(gpkData.direct_references).forEach(([source, targets]) => {
+          if (targets.includes(articleNum)) {
+            level3.add(source)
+          }
+        })
+      })
+      level3.forEach(a => articlesToShow.add(a))
     }
 
     const initialNodes = Array.from(articlesToShow).map((articleNum) => {
