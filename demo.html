@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ГПК - Интерактивна карта (Demo)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .intro {
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-card h3 {
+            color: #1e3a8a;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-card p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .stats {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .stats h2 {
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 6px;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #3b82f6;
+        }
+
+        .stat-label {
+            color: #64748b;
+            margin-top: 0.5rem;
+        }
+
+        .setup-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .setup-section h2 {
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #3b82f6;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+        }
+
+        .tech-stack {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .tech-badge {
+            background: #eff6ff;
+            color: #1e40af;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Граждански процесуален кодекс</h1>
+            <p class="intro">
+                Интерактивна уеб апликация за визуализация на ГПК като mind map с препратки
+                между членовете. Проектът включва автоматично откриване на преки и семантични
+                връзки между членовете на закона.
+            </p>
+        </header>
+
+        <div class="features">
+            <div class="feature-card">
+                <h3>🗺️ Интерактивна карта</h3>
+                <p>
+                    Визуализация на всички членове като mind map с възможност за
+                    приближаване, отдалечаване и навигация.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <h3>🔗 Преки препратки</h3>
+                <p>
+                    Автоматично откриване и показване на директните препратки
+                    между членовете (напр. "чл. 5", "ал. 2").
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <h3>🧠 Семантични връзки</h3>
+                <p>
+                    Интелигентно откриване на семантично свързани членове
+                    базирано на ключови думи и теми.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <h3>🔍 Търсене</h3>
+                <p>
+                    Пълнотекстово търсене по номер на член, заглавие и
+                    съдържание с маркиране на резултатите.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <h3>📱 Responsive дизайн</h3>
+                <p>
+                    Адаптивен интерфейс, който работи отлично на всички
+                    устройства - десктоп, таблет и мобилен.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <h3>⚡ Бърза навигация</h3>
+                <p>
+                    Кликване на препратки в текста за моментален преход
+                    между свързани членове.
+                </p>
+            </div>
+        </div>
+
+        <div class="stats">
+            <h2>Статистика на данните</h2>
+            <p>Анализиран е пълният текст на Граждански процесуален кодекс:</p>
+            <div class="stat-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="articles-count">717</div>
+                    <div class="stat-label">Членове</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="direct-refs">613</div>
+                    <div class="stat-label">Преки препратки</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="semantic-links">56,282</div>
+                    <div class="stat-label">Семантични връзки</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="setup-section">
+            <h2>🚀 Как да стартирам приложението?</h2>
+
+            <h3 style="margin-top: 1.5rem; color: #475569;">1. Инсталирайте Node.js</h3>
+            <div class="code-block">curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+sudo apt-get install -y nodejs</div>
+
+            <h3 style="margin-top: 1.5rem; color: #475569;">2. Инсталирайте зависимостите</h3>
+            <div class="code-block">cd gpk-mindmap
+npm install</div>
+
+            <h3 style="margin-top: 1.5rem; color: #475569;">3. Стартирайте приложението</h3>
+            <div class="code-block">npm run dev</div>
+
+            <p style="margin-top: 1rem;">
+                Приложението ще се отвори автоматично на
+                <a href="http://localhost:3000" style="color: #3b82f6;">http://localhost:3000</a>
+            </p>
+
+            <h3 style="margin-top: 2rem; color: #475569;">Технологичен стек</h3>
+            <div class="tech-stack">
+                <span class="tech-badge">React 18</span>
+                <span class="tech-badge">Vite</span>
+                <span class="tech-badge">React Flow</span>
+                <span class="tech-badge">Dagre</span>
+                <span class="tech-badge">Python 3</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load GPK data and update stats
+        fetch('./src/data/gpk_data.json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('articles-count').textContent =
+                    data.metadata.total_articles;
+                document.getElementById('direct-refs').textContent =
+                    data.metadata.total_direct_references;
+                document.getElementById('semantic-links').textContent =
+                    data.metadata.total_semantic_links.toLocaleString('bg-BG');
+            })
+            .catch(error => {
+                console.log('Could not load stats:', error);
+            });
+    </script>
+</body>
+</html>
