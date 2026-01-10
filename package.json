@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "parse": "python3 parse_gpk.py"
+    "parse": "python3 parse_gpk.py",
+    "deploy": "npm run build && gh-pages -d dist"
   },
   "dependencies": {
     "react": "^18.2.0",
