@@ -28,10 +28,15 @@ function ArticlePanel({ article, onClose, onArticleClick }) {
 
   const renderContent = (content) => {
     // Replace article references with clickable links
+    // But skip external law references (e.g., "чл. 6 от Закона за държавните такси")
     const articlePattern = /чл\.\s*(\d+[а-я]*)/gi
     const parts = []
     let lastIndex = 0
     let match
+
+    // Pattern to detect if this is an external law reference
+    // Matches: "чл. X от [Capitalized Law Name]" where the law name starts with capital Cyrillic
+    const externalRefPattern = /^(?:,\s*ал\.\s*\d+)?\s+от\s+[А-Я]/
 
     const regex = new RegExp(articlePattern)
     while ((match = regex.exec(content)) !== null) {
@@ -40,9 +45,13 @@ function ArticlePanel({ article, onClose, onArticleClick }) {
         parts.push(content.substring(lastIndex, match.index))
       }
 
-      // Add clickable reference
+      // Check if this is an external law reference by looking at what follows
+      const textAfterMatch = content.substring(regex.lastIndex)
+      const isExternalRef = externalRefPattern.test(textAfterMatch)
+
+      // Add clickable reference only if it's in our GPK data and not an external reference
       const refNumber = match[1]
-      if (gpkData.articles[refNumber]) {
+      if (gpkData.articles[refNumber] && !isExternalRef) {
         parts.push(
           <span
             key={match.index}

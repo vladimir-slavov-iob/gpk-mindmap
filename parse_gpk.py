@@ -125,9 +125,25 @@ class GPKParser:
         return alineyas
 
     def find_direct_references(self):
-        """Find direct references to other articles (e.g., 'чл. 5', 'ал. 2')"""
+        """Find direct references to other articles (e.g., 'чл. 5', 'ал. 2')
+
+        Excludes references to other laws, which follow the pattern:
+        'чл. X от [Capitalized Law Name]' (e.g., 'чл. 6 от Закона за държавните такси')
+        """
+        # Pattern to detect external law references: "чл. X от [Law Name]"
+        # The law name starts with a capital Cyrillic letter
+        # Note: Don't use IGNORECASE here so [А-Я] only matches uppercase
+        external_ref_pattern = re.compile(
+            r'[Чч]л\.\s*(\d+[а-яА-Я]*?)(?:,\s*[Аа]л\.\s*\d+)?\s+от\s+[А-Я]'
+        )
+
         for article_num, article_data in self.articles.items():
             content = article_data['content']
+
+            # First, find all external references to exclude them
+            external_refs = set()
+            for match in external_ref_pattern.finditer(content):
+                external_refs.add(match.group(1))
 
             # Pattern for article references: чл. 123, чл. 5а, чл. 123, ал. 2
             ref_pattern = r'чл\.\s*(\d+[а-я]*?)(?:,\s*ал\.\s*(\d+))?(?:\s|,|\.|\))'
@@ -136,6 +152,10 @@ class GPKParser:
 
             for match in matches:
                 referenced_article = match.group(1)
+
+                # Skip if this article number was found in an external reference
+                if referenced_article in external_refs:
+                    continue
 
                 # Don't self-reference
                 if referenced_article != article_num and referenced_article in self.articles:
