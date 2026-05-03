@@ -44,7 +44,12 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>Граждански процесуален кодекс - Интерактивна карта</h1>
+        <div className="brand">
+          <h1 className="brand-text">
+            <span className="brand-title">Граждански процесуален кодекс</span>
+            <span className="brand-tagline">Интерактивна карта</span>
+          </h1>
+        </div>
         <div className="header-controls">
           <SearchBar
             onResults={handleSearchResults}
