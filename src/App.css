@@ -59,7 +59,7 @@
 .mindmap-container {
   flex: 1;
   position: relative;
-  background: #fafafa;
+  background: #05060f;
 }
 
 .panel-container {
@@ -68,6 +68,23 @@
   box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
   z-index: 10;
+}
+
+.panel-placeholder {
+  padding: 2rem 1.5rem;
+  color: #475569;
+}
+
+.panel-placeholder h2 {
+  margin: 0 0 0.75rem;
+  color: #1e293b;
+  font-size: 1.15rem;
+}
+
+.panel-placeholder p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
 }
 
 @media (max-width: 1024px) {

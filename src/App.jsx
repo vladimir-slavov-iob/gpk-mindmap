@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import MindMap from './components/MindMap'
+import SphereMap from './components/SphereMap'
 import ArticlePanel from './components/ArticlePanel'
 import SearchBar from './components/SearchBar'
 import './App.css'
@@ -45,7 +45,7 @@ function App() {
 
       <div className="app-content">
         <div className="mindmap-container">
-          <MindMap
+          <SphereMap
             onArticleSelect={handleArticleSelect}
             selectedArticle={selectedArticle}
             showSemanticLinks={showSemanticLinks}
@@ -54,15 +54,24 @@ function App() {
           />
         </div>
 
-        {selectedArticle && (
-          <div className="panel-container">
+        <div className="panel-container">
+          {selectedArticle ? (
             <ArticlePanel
               article={selectedArticle}
               onClose={() => setSelectedArticle(null)}
               onArticleClick={handleArticleSelect}
             />
-          </div>
-        )}
+          ) : (
+            <div className="panel-placeholder">
+              <h2>Изберете член</h2>
+              <p>
+                Кликнете върху възел от сферата или потърсете член по номер,
+                заглавие или съдържание. Текстът на члена ще се появи тук, а
+                препратките вътре в него ще можете да следвате с клик.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
