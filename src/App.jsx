@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import SphereMap from './components/SphereMap'
+import MindMap from './components/MindMap'
 import ArticlePanel from './components/ArticlePanel'
 import SearchBar from './components/SearchBar'
 import './App.css'
@@ -9,6 +10,7 @@ function App() {
   const [showSemanticLinks, setShowSemanticLinks] = useState(false)
   const [highlightedArticles, setHighlightedArticles] = useState([])
   const [focusNodeId, setFocusNodeId] = useState(null)
+  const [viewMode, setViewMode] = useState('sphere')
 
   const handleArticleSelect = (articleData, shouldFocus = false) => {
     setSelectedArticle(articleData)
@@ -32,6 +34,24 @@ function App() {
             onResults={handleSearchResults}
             onArticleSelect={handleArticleSelect}
           />
+          <div className="view-toggle" role="tablist" aria-label="Изглед">
+            <button
+              role="tab"
+              aria-selected={viewMode === 'sphere'}
+              className={viewMode === 'sphere' ? 'active' : ''}
+              onClick={() => setViewMode('sphere')}
+            >
+              Сфера
+            </button>
+            <button
+              role="tab"
+              aria-selected={viewMode === 'mindmap'}
+              className={viewMode === 'mindmap' ? 'active' : ''}
+              onClick={() => setViewMode('mindmap')}
+            >
+              Карта
+            </button>
+          </div>
           <label className="semantic-toggle">
             <input
               type="checkbox"
@@ -44,14 +64,26 @@ function App() {
       </header>
 
       <div className="app-content">
-        <div className="mindmap-container">
-          <SphereMap
-            onArticleSelect={handleArticleSelect}
-            selectedArticle={selectedArticle}
-            showSemanticLinks={showSemanticLinks}
-            highlightedArticles={highlightedArticles}
-            focusNodeId={focusNodeId}
-          />
+        <div
+          className={`mindmap-container ${viewMode === 'mindmap' ? 'mindmap-mode' : ''}`}
+        >
+          {viewMode === 'sphere' ? (
+            <SphereMap
+              onArticleSelect={handleArticleSelect}
+              selectedArticle={selectedArticle}
+              showSemanticLinks={showSemanticLinks}
+              highlightedArticles={highlightedArticles}
+              focusNodeId={focusNodeId}
+            />
+          ) : (
+            <MindMap
+              onArticleSelect={handleArticleSelect}
+              selectedArticle={selectedArticle}
+              showSemanticLinks={showSemanticLinks}
+              highlightedArticles={highlightedArticles}
+              focusNodeId={focusNodeId}
+            />
+          )}
         </div>
 
         <div className="panel-container">
