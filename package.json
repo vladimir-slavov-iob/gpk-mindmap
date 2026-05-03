@@ -11,10 +11,9 @@
     "deploy": "npm run build && gh-pages -d dist"
   },
   "dependencies": {
-    "dagre": "^0.8.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "reactflow": "^11.10.0"
+    "three": "^0.184.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.0",

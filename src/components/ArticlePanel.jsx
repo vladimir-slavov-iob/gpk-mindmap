@@ -22,7 +22,7 @@ function ArticlePanel({ article, onClose, onArticleClick }) {
   const handleRefClick = (refNumber) => {
     const refArticle = gpkData.articles[refNumber]
     if (refArticle) {
-      onArticleClick(refArticle)
+      onArticleClick(refArticle, true)
     }
   }
 
