@@ -1,9 +1,24 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import SphereMap from './components/SphereMap'
 import MindMap from './components/MindMap'
 import ArticlePanel from './components/ArticlePanel'
 import SearchBar from './components/SearchBar'
 import './App.css'
+
+function useIsCompact() {
+  const [isCompact, setIsCompact] = useState(() =>
+    typeof window !== 'undefined'
+      ? window.matchMedia('(max-width: 1024px)').matches
+      : false,
+  )
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 1024px)')
+    const update = (e) => setIsCompact(e.matches)
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
+  return isCompact
+}
 
 function App() {
   const [selectedArticle, setSelectedArticle] = useState(null)
@@ -11,6 +26,7 @@ function App() {
   const [highlightedArticles, setHighlightedArticles] = useState([])
   const [focusNodeId, setFocusNodeId] = useState(null)
   const [viewMode, setViewMode] = useState('sphere')
+  const isCompact = useIsCompact()
 
   const handleArticleSelect = (articleData, shouldFocus = false) => {
     setSelectedArticle(articleData)
@@ -86,24 +102,26 @@ function App() {
           )}
         </div>
 
-        <div className="panel-container">
-          {selectedArticle ? (
-            <ArticlePanel
-              article={selectedArticle}
-              onClose={() => setSelectedArticle(null)}
-              onArticleClick={handleArticleSelect}
-            />
-          ) : (
-            <div className="panel-placeholder">
-              <h2>Изберете член</h2>
-              <p>
-                Кликнете върху възел от сферата или потърсете член по номер,
-                заглавие или съдържание. Текстът на члена ще се появи тук, а
-                препратките вътре в него ще можете да следвате с клик.
-              </p>
-            </div>
-          )}
-        </div>
+        {(selectedArticle || !isCompact) && (
+          <div className="panel-container">
+            {selectedArticle ? (
+              <ArticlePanel
+                article={selectedArticle}
+                onClose={() => setSelectedArticle(null)}
+                onArticleClick={handleArticleSelect}
+              />
+            ) : (
+              <div className="panel-placeholder">
+                <h2>Изберете член</h2>
+                <p>
+                  Кликнете върху възел от сферата или потърсете член по номер,
+                  заглавие или съдържание. Текстът на члена ще се появи тук, а
+                  препратките вътре в него ще можете да следвате с клик.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   )
